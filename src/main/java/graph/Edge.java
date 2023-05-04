@@ -70,9 +70,9 @@ public class Edge implements Comparable<Edge> {
      */
     @Override
     public int compareTo(Edge o) {
-        // FILL IN CODE
-
-        return 0; // change
+        int thisCost = this.id2 - this.id1;
+        int otherCost = o.id2 - o.id1;
+        return Integer.compare(thisCost, otherCost);
     }
 
 

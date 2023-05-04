@@ -1,6 +1,12 @@
 package graph;
 
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.StringTokenizer;
 
 /**
  * A class that represents a graph: stores the array of city nodes, the
@@ -16,6 +22,7 @@ public class Graph {
     private int numEdges; // total number of edges
     // Add other variable(s) as needed:
     // add a HashMap to map cities to vertexIds.
+    private HashMap<String, Integer> cityNameToNodeIdMap;
 
     /**
      * Constructor. Read graph info from the given file,
@@ -24,8 +31,47 @@ public class Graph {
      *   @param filename name of the file that has nodes and edges
      */
     public Graph(String filename) {
-        // FILL IN CODE
+        cityNameToNodeIdMap = new HashMap<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+            String line = br.readLine(); // read "NODES"
+            int numNodes = Integer.parseInt(br.readLine().trim()); // read the number of nodes
 
+            nodes = new CityNode[numNodes];
+            adjacencyList = new Edge[numNodes];
+
+            for (int i = 0; i < numNodes; i++) { // loop through each line that specifies a node
+                line = br.readLine();
+                StringTokenizer st = new StringTokenizer(line); // split line into tokens
+                String cityName = st.nextToken();
+                double x = Double.parseDouble(st.nextToken());
+                double y = Double.parseDouble(st.nextToken());
+                nodes[i] = new CityNode(cityName, x, y); // add node to nodes
+                cityNameToNodeIdMap.put(cityName, i); // add node to hashmap
+            }
+
+            line = br.readLine(); // read "ARCS"
+            while ((line = br.readLine()) != null) { // loop through each line that specifies an arc (edge)
+                StringTokenizer st = new StringTokenizer(line);
+                String city1 = st.nextToken();
+                String city2 = st.nextToken();
+                int cost = Integer.parseInt(st.nextToken()); // the third argument is the cost
+
+                int id1 = cityNameToNodeIdMap.get(city1);
+                int id2 = cityNameToNodeIdMap.get(city2);
+
+                Edge edge = new Edge(id1, id2, cost);
+                edge.setNext(adjacencyList[id1]);
+                adjacencyList[id1] = edge;
+
+                Edge reverseEdge = new Edge(id2, id1, cost); // need to make each edge bidirectional
+                reverseEdge.setNext(adjacencyList[id2]);
+                adjacencyList[id2] = reverseEdge;
+
+                numEdges += 2;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

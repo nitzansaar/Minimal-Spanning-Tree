@@ -1,9 +1,16 @@
 package mstAlgorithms;
 
+import graph.Edge;
 import graph.Graph;
+import sets.DisjointSets;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /** Subclass of MSTAlgorithm. Computes MST of the graph using Kruskal's algorithm. */
 public class KruskalAlgorithm extends MSTAlgorithm {
+
+    private final Graph graph;
 
     /**
      * Constructor for KruskalAlgorithm. Takes the graph
@@ -11,6 +18,7 @@ public class KruskalAlgorithm extends MSTAlgorithm {
      */
     public KruskalAlgorithm(Graph graph) {
         super(graph);
+        this.graph = graph;
     }
 
     /**
@@ -21,8 +29,35 @@ public class KruskalAlgorithm extends MSTAlgorithm {
      */
     @Override
     public void computeMST() {
-        // FILL IN CODE
+        int numNodes = graph.numNodes();
 
+        DisjointSets ds = new DisjointSets();
+        ds.createSets(numNodes);
+
+        ArrayList<Edge> edges = new ArrayList<>();
+        for (int i = 0; i < numNodes; i++) {
+            Edge e = graph.getFirstEdge(i);
+            while (e != null) {
+                edges.add(e);
+                e = e.next();
+            }
+        }
+
+        Edge[] sortedEdges = edges.toArray(new Edge[0]);
+        Arrays.sort(sortedEdges);
+
+        for (Edge edge : sortedEdges) {
+            int id1 = edge.getId1();
+            int id2 = edge.getId2();
+
+            int setId1 = ds.find(id1);
+            int setId2 = ds.find(id2);
+
+            if (setId1 != setId2) {
+                addMSTEdge(edge);
+                ds.union(setId1, setId2);
+            }
+        }
     }
 
 }

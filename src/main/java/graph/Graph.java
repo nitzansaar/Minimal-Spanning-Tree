@@ -20,9 +20,6 @@ public class Graph {
     private CityNode[] nodes; // nodes of the graph
     private Edge[] adjacencyList; // adjacency list; for each vertex stores a linked list of edges
     private int numEdges; // total number of edges
-    // Add other variable(s) as needed:
-    // add a HashMap to map cities to vertexIds.
-    private HashMap<String, Integer> cityNameToNodeIdMap;
 
     /**
      * Constructor. Read graph info from the given file,
@@ -31,7 +28,9 @@ public class Graph {
      *   @param filename name of the file that has nodes and edges
      */
     public Graph(String filename) {
-        cityNameToNodeIdMap = new HashMap<>();
+        // Add other variable(s) as needed:
+        // add a HashMap to map cities to vertexIds.
+        HashMap<String, Integer> cityNameToNodeIdMap = new HashMap<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line = br.readLine(); // read "NODES"
             int numNodes = Integer.parseInt(br.readLine().trim()); // read the number of nodes

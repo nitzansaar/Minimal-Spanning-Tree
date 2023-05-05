@@ -34,18 +34,12 @@ public class KruskalAlgorithm extends MSTAlgorithm {
         DisjointSets ds = new DisjointSets();
         ds.createSets(numNodes);
 
-        ArrayList<Edge> edges = new ArrayList<>();
-        for (int i = 0; i < numNodes; i++) {
-            Edge e = graph.getFirstEdge(i);
-            while (e != null) {
-                edges.add(e);
-                e = e.next();
-            }
-        }
+        ArrayList<Edge> edges = getEdgeList(numNodes);
 
         Edge[] sortedEdges = edges.toArray(new Edge[0]);
-        Arrays.sort(sortedEdges);
+        Arrays.sort(sortedEdges, (edge1, edge2) -> edge1.getCost() - edge2.getCost());
 
+        int mstSize = 0;
         for (Edge edge : sortedEdges) {
             int id1 = edge.getId1();
             int id2 = edge.getId2();
@@ -56,9 +50,25 @@ public class KruskalAlgorithm extends MSTAlgorithm {
             if (setId1 != setId2) {
                 addMSTEdge(edge);
                 ds.union(setId1, setId2);
+                mstSize++;
+
+                if (mstSize == numNodes - 1) {
+                    break;
+                }
             }
         }
     }
 
+    private ArrayList<Edge> getEdgeList(int numNodes) {
+        ArrayList<Edge> edges = new ArrayList<>();
+        for (int i = 0; i < numNodes; i++) {
+            Edge e = graph.getFirstEdge(i);
+            while (e != null) {
+                edges.add(e);
+                e = e.next();
+            }
+        }
+        return edges;
+    }
 }
 

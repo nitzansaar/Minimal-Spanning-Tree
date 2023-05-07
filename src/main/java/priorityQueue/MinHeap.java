@@ -39,4 +39,44 @@ public class MinHeap {
         heap[j] = temp;
     }
 
+    private void restoreMinHeap(int i) {
+        int left = leftChild(i);
+        int right = rightChild(i);
+        int smallest = i;
+
+        if (left < size && heap[left].getCost() < heap[smallest].getCost()) {
+            smallest = left;
+        }
+        if (right < size && heap[right].getCost() < heap[smallest].getCost()) {
+            smallest = right;
+        }
+        if (smallest != i) {
+            swap(i, smallest);
+            restoreMinHeap(smallest);
+        }
+    }
+    public Edge removeMin() {
+        if (isEmpty()) {
+            return null;
+        }
+
+        Edge min = heap[0];
+        size--;
+
+        if (size > 0) {
+            heap[0] = heap[size];
+            restoreMinHeap(0);
+        }
+        return min;
+    }
+
+    private int leftChild(int i) {
+        return 2 * i + 1;
+    }
+
+    private int rightChild(int i) {
+        return 2 * i + 2;
+    }
+
+
 }

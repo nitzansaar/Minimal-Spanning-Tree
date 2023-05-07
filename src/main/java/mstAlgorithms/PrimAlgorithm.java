@@ -29,6 +29,34 @@ public class PrimAlgorithm extends MSTAlgorithm {
      * */
     @Override
     public void computeMST() {
+        int numNodes = graph.numNodes();
+        int maxEdges = numNodes * (numNodes - 1) / 2;
+        boolean[] visited = new boolean[numNodes];
+        MinHeap minHeap = new MinHeap(maxEdges);
 
+        minHeap.insert(new Edge(sourceVertex, sourceVertex, 0));
+
+        while (!minHeap.isEmpty()) {
+            Edge currentEdge = minHeap.removeMin();
+            int u = currentEdge.getId2();
+
+            if (visited[u]) {
+                continue;
+            }
+
+            visited[u] = true;
+            if (u != sourceVertex) {
+                addMSTEdge(currentEdge);
+            }
+
+            Edge edge = graph.getFirstEdge(u);
+            while (edge != null) {
+                int v = edge.getId2();
+                if (!visited[v]) {
+                    minHeap.insert(edge);
+                }
+                edge = edge.next();
+            }
+        }
     }
 }

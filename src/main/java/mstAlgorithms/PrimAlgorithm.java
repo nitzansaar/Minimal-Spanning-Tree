@@ -1,10 +1,15 @@
 package mstAlgorithms;
 
+import graph.Edge;
 import graph.Graph;
+import priorityQueue.MinHeap;
 
 /** Subclass of MSTAlgorithm. Uses Prim's algorithm to compute MST of the graph. */
 public class PrimAlgorithm extends MSTAlgorithm {
     private int sourceVertex;
+    private final Graph graph;
+
+
 
     /**
      * Constructor for PrimAlgorithm. Takes the graph
@@ -14,6 +19,7 @@ public class PrimAlgorithm extends MSTAlgorithm {
     public PrimAlgorithm(Graph graph, int sourceVertex) {
         super(graph);
         this.sourceVertex = sourceVertex;
+        this.graph = graph;
     }
 
     /**
@@ -23,8 +29,6 @@ public class PrimAlgorithm extends MSTAlgorithm {
      * */
     @Override
     public void computeMST() {
-        // FILL IN CODE
-        // Note: must use a MinHeap and be efficient
 
     }
 }

@@ -52,7 +52,7 @@ public class KruskalAlgorithm extends MSTAlgorithm {
                 ds.union(setId1, setId2);
                 mstSize++;
 
-                if (mstSize == numNodes - 1) {
+                if (mstSize == numNodes - 1) { // MST should have numNodes-1 edges
                     break;
                 }
             }

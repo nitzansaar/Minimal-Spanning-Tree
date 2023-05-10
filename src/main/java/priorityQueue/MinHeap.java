@@ -1,16 +1,24 @@
 package priorityQueue;
-
-import graph.Edge;
-
 /** A priority queue: represented by the min heap.
  *  Used in Prim's algorithm. */
 public class MinHeap {
-    // FILL IN CODE
-    private Edge[] heap;
-    int size;
+    private static class HeapElement {
+        int nodeId;
+        int priority;
+
+        HeapElement(int nodeId, int priority) {
+            this.nodeId = nodeId;
+            this.priority = priority;
+        }
+    }
+
+    private final HeapElement[] heap;
+    private final int[] positions;
+    private int size;
 
     public MinHeap(int capacity) {
-        heap = new Edge[capacity];
+        heap = new HeapElement[capacity];
+        positions = new int[capacity];
         size = 0;
     }
 
@@ -18,56 +26,69 @@ public class MinHeap {
         return size == 0;
     }
 
-    public void insert(Edge edge) {
+    public void insert(int nodeId, int priority) {
         int i = size;
         size++;
 
-        while (i > 0 && edge.getCost() < heap[parent(i)].getCost()) {
+        while (i > 0 && priority < heap[parent(i)].priority) {
             heap[i] = heap[parent(i)];
+            positions[heap[i].nodeId] = i;
             i = parent(i);
         }
-        heap[i] = edge;
+        heap[i] = new HeapElement(nodeId, priority);
+        positions[nodeId] = i;
     }
 
-    private int parent(int i) {
-        return (i - 1) / 2;
-    }
-
-    private void swap(int i, int j) {
-        Edge temp = heap[i];
-        heap[i] = heap[j];
-        heap[j] = temp;
-    }
-
-    private void restoreMinHeap(int i) {
-        int left = leftChild(i);
-        int right = rightChild(i);
-        int smallest = i;
-
-        if (left < size && heap[left].getCost() < heap[smallest].getCost()) {
-            smallest = left;
-        }
-        if (right < size && heap[right].getCost() < heap[smallest].getCost()) {
-            smallest = right;
-        }
-        if (smallest != i) {
-            swap(i, smallest);
-            restoreMinHeap(smallest);
-        }
-    }
-    public Edge removeMin() {
+    public int removeMin() {
         if (isEmpty()) {
-            return null;
+            return -1;
         }
 
-        Edge min = heap[0];
+        int minNodeId = heap[0].nodeId;
         size--;
 
         if (size > 0) {
             heap[0] = heap[size];
-            restoreMinHeap(0);
+            positions[heap[0].nodeId] = 0;
+            restore(0);
         }
-        return min;
+        return minNodeId;
+    }
+
+    public int getPriority(int nodeId) {
+        return heap[positions[nodeId]].priority;
+    }
+
+    public void reduceKey(int nodeId, int newPriority) {
+        int index = positions[nodeId];
+        while (index > 0 && newPriority < heap[parent(index)].priority) {
+            heap[index] = heap[parent(index)];
+            positions[heap[index].nodeId] = index;
+            index = parent(index);
+        }
+        heap[index] = new HeapElement(nodeId, newPriority);
+        positions[nodeId] = index;
+    }
+
+    private void restore(int i) {
+        int left = leftChild(i);
+        int right = rightChild(i);
+        int smallest = i;
+
+        if (left < size && heap[left].priority < heap[smallest].priority) {
+            smallest = left;
+        }
+        if (right < size && heap[right].priority < heap[smallest].priority) {
+            smallest = right;
+        }
+        if (smallest != i) {
+            swap(i, smallest);
+            restore(smallest);
+        }
+    }
+
+    private int parent(int i) {
+        return (i - 1) / 2;
     }
 
     private int leftChild(int i) {
@@ -78,5 +99,11 @@ public class MinHeap {
         return 2 * i + 2;
     }
 
-
+    private void swap(int i, int j) {
+        HeapElement temp = heap[i];
+        heap[i] = heap[j];
+        heap[j] = temp;
+        positions[heap[i].nodeId] = i;
+        positions[heap[j].nodeId] = j;
+    }
 }

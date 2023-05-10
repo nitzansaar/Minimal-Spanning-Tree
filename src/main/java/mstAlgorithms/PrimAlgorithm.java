@@ -30,33 +30,47 @@ public class PrimAlgorithm extends MSTAlgorithm {
     @Override
     public void computeMST() {
         int numNodes = graph.numNodes();
-        int maxEdges = numNodes * (numNodes - 1) / 2;
         boolean[] visited = new boolean[numNodes];
-        MinHeap minHeap = new MinHeap(maxEdges);
+        MinHeap minHeap = new MinHeap(numNodes);
+        Edge[] parentEdges = new Edge[numNodes];
 
-        minHeap.insert(new Edge(sourceVertex, sourceVertex, 0));
+        for (int i = 0; i < numNodes; i++) {
+            if (i == sourceVertex) {
+                minHeap.insert(i, 0);
+            } else {
+                minHeap.insert(i, Integer.MAX_VALUE);
+            }
+        }
 
         while (!minHeap.isEmpty()) {
-            Edge currentEdge = minHeap.removeMin();
-            int u = currentEdge.getId2();
+            int currentNode = minHeap.removeMin();
 
-            if (visited[u]) {
+            if (visited[currentNode]) {
                 continue;
             }
 
-            visited[u] = true;
-            if (u != sourceVertex) {
-                addMSTEdge(currentEdge);
+            visited[currentNode] = true;
+            if (parentEdges[currentNode] != null) {
+                addMSTEdge(parentEdges[currentNode]);
             }
 
-            Edge edge = graph.getFirstEdge(u);
+            Edge edge = graph.getFirstEdge(currentNode);
             while (edge != null) {
-                int v = edge.getId2();
-                if (!visited[v]) {
-                    minHeap.insert(edge);
+                int neighbor = edge.getId2();
+
+                if (!visited[neighbor]) {
+                    int edgeCost = edge.getCost();
+                    int currentPriority = minHeap.getPriority(neighbor);
+
+                    if (edgeCost < currentPriority) {
+                        minHeap.reduceKey(neighbor, edgeCost);
+                        parentEdges[neighbor] = edge;
+                    }
                 }
+
                 edge = edge.next();
             }
         }
+
     }
 }

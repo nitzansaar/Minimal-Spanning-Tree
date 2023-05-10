@@ -1,6 +1,9 @@
 package priorityQueue;
-/** A priority queue: represented by the min heap.
- *  Used in Prim's algorithm. */
+
+/**
+ * A priority queue: represented by the min heap.
+ * Used in Prim's algorithm.
+ */
 public class MinHeap {
     private static class HeapElement {
         int nodeId;

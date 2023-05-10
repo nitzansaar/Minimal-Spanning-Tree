@@ -7,13 +7,16 @@ import sets.DisjointSets;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-/** Subclass of MSTAlgorithm. Computes MST of the graph using Kruskal's algorithm. */
+/**
+ * Subclass of MSTAlgorithm. Computes MST of the graph using Kruskal's algorithm.
+ */
 public class KruskalAlgorithm extends MSTAlgorithm {
 
     private final Graph graph;
 
     /**
      * Constructor for KruskalAlgorithm. Takes the graph
+     *
      * @param graph input graph
      */
     public KruskalAlgorithm(Graph graph) {

@@ -2,7 +2,6 @@ package graph;
 
 import java.awt.*;
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -17,22 +16,21 @@ import java.util.StringTokenizer;
  * You are required to implement a MinHeap from scratch, instead of using Java's built in PriorityQueue.
  */
 public class Graph {
-    private CityNode[] nodes; // nodes of the graph
-    private Edge[] adjacencyList; // adjacency list; for each vertex stores a linked list of edges
-    private int numEdges; // total number of edges
+    private CityNode[] nodes;
+    private Edge[] adjacencyList;
+    private int numEdges;
 
     /**
      * Constructor. Read graph info from the given file,
      * and create nodes and edges of the graph.
      *
-     *   @param filename name of the file that has nodes and edges
+     * @param filename name of the file that has nodes and edges
      */
     public Graph(String filename) {
-        // Add other variable(s) as needed:
-        // add a HashMap to map cities to vertexIds.
         HashMap<String, Integer> cityNameToNodeIdMap = new HashMap<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-            String line = br.readLine(); // read "NODES"
+            br.readLine(); // read "NODES"
+            String line;
             int numNodes = Integer.parseInt(br.readLine().trim()); // read the number of nodes
 
             nodes = new CityNode[numNodes];
@@ -48,7 +46,7 @@ public class Graph {
                 cityNameToNodeIdMap.put(cityName, i); // add node to hashmap
             }
 
-            line = br.readLine(); // read "ARCS"
+            br.readLine(); // read "ARCS"
             while ((line = br.readLine()) != null) { // loop through each line that specifies an arc (edge)
                 StringTokenizer st = new StringTokenizer(line);
                 String city1 = st.nextToken();
@@ -75,14 +73,17 @@ public class Graph {
 
     /**
      * Return the number of nodes in the graph
+     *
      * @return number of nodes
      */
     public int numNodes() {
         return nodes.length;
     }
 
-    /** Return the head of the linked list that contains all edges outgoing
+    /**
+     * Return the head of the linked list that contains all edges outgoing
      * from nodeId
+     *
      * @param nodeId id of the node
      * @return head of the linked list of Edges
      */
@@ -106,8 +107,8 @@ public class Graph {
         }
         Point[][] edges2D = new Point[numEdges][2];
         int idx = 0;
-        for (int i = 0; i < adjacencyList.length; i++) {
-            for (Edge tmp = adjacencyList[i]; tmp != null; tmp = tmp.next(), idx++) {
+        for (Edge edge : adjacencyList) {
+            for (Edge tmp = edge; tmp != null; tmp = tmp.next(), idx++) {
                 edges2D[idx][0] = nodes[tmp.getId1()].getLocation();
                 edges2D[idx][1] = nodes[tmp.getId2()].getLocation();
             }
@@ -119,6 +120,7 @@ public class Graph {
     /**
      * Get the nodes of the graph as a 1D array of Points.
      * Used in GUIApp to display the nodes of the graph.
+     *
      * @return a list of Points that correspond to nodes of the graph.
      */
     public Point[] getNodes() {
@@ -136,6 +138,7 @@ public class Graph {
 
     /**
      * Used in GUIApp to display the names of the cities.
+     *
      * @return the list that contains the names of cities (that correspond
      * to the nodes of the graph)
      */
@@ -154,6 +157,7 @@ public class Graph {
 
     /**
      * Return the CityNode for the given nodeId
+     *
      * @param nodeId id of the node
      * @return CityNode
      */
